@@ -1,42 +1,49 @@
-// import ClickTracker from '../ClickTracker';
-// import Reader from '../Reader/Reader';
-// import articles from '../../articles.json';
 
-// import { useState } from 'react';
-// import Timer from '../Timer';
-// import Sidebar from '../Sidebar/Sidebar';
-// import ThemeSwitcher from '../ThemeSwitcher';
-import ActivityTracker from '../ActivityTracker';
+import { useState, useEffect } from 'react';
+
+import Description from '../Description/Description';
+import Feedback from '../Feedback/Feedback';
+import Options from '../Options/Options';
 import css from './App.module.css';
 
 export default function App() {
-  // const [isTimerMounted, setIsTimerMounted] = useState(false);
 
-  // const toggleTimer = () => setIsTimerMounted(!isTimerMounted);
+    const [feedback, setFeedback] = useState(() => {
 
-  // const [isOpen, setIsOpen] = useState(false);
+      const savedFeedback = localStorage.getItem("saved-feedback")
 
-  // const openSidebar = () => setIsOpen(true);
+      if (savedFeedback !== null) {
+        return JSON.parse(savedFeedback);
+      }
+        return {
+          good: 0,
+          neutral: 0,
+          bad: 0
+        }
+    }
+);
 
-  // const closeSidebar = () => setIsOpen(false);
+    const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+    const updateFeedback = feedbackType => {
+      setFeedback(prevFeedback => {
+        return {
+          ...prevFeedback,
+          [feedbackType]: prevFeedback[feedbackType] + 1
+        }
+      })
+    }
+
+      useEffect(() => {
+        localStorage.setItem('saved-feedback', JSON.stringify(feedback));
+      }, [feedback]);
 
   return (
     <div className={css.container}>
-      <h1 className={css.title}>Effects in React</h1>
 
-      <ActivityTracker />
+    <Description/ >
+    <Options updateFeedback = {updateFeedback} totalFeedback = {totalFeedback} setFeedback = {setFeedback}/>
+    {totalFeedback ? <Feedback feedback = {feedback} totalFeedback = {totalFeedback} />: <p>No feedback yet </p> }
 
-      {/* <ThemeSwitcher /> */}
-
-      {/* <Reader items={articles} /> */}
-
-      {/* <ClickTracker /> */}
-
-      {/* <button onClick={openSidebar}>Open</button>
-      {isOpen && <Sidebar onClose={closeSidebar} />} */}
-
-      {/* <button onClick={toggleTimer}>{isTimerMounted ? 'Hide' : 'Show'}</button>
-      {isTimerMounted && <Timer />} */}
     </div>
   );
 }
