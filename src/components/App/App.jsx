@@ -5,6 +5,7 @@ import Description from '../Description/Description';
 import Feedback from '../Feedback/Feedback';
 import Options from '../Options/Options';
 import css from './App.module.css';
+import Notification from '../Notification/Notification';
 
 export default function App() {
 
@@ -24,6 +25,7 @@ export default function App() {
 );
 
     const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+    const positivePercent =  Math.round((feedback.good / totalFeedback) * 100);
     const updateFeedback = feedbackType => {
       setFeedback(prevFeedback => {
         return {
@@ -42,7 +44,7 @@ export default function App() {
 
     <Description/ >
     <Options updateFeedback = {updateFeedback} totalFeedback = {totalFeedback} setFeedback = {setFeedback}/>
-    {totalFeedback ? <Feedback feedback = {feedback} totalFeedback = {totalFeedback} />: <p>No feedback yet </p> }
+    {totalFeedback ? <Feedback feedback = {feedback} totalFeedback = {totalFeedback} positivePercent = {positivePercent} />: <Notification/> }
 
     </div>
   );
